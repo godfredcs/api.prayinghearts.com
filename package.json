@@ -1,0 +1,9 @@
+{
+  "name": "api.prayinghearts.com",
+  "version": "1.0.0",
+  "description": "RESTful API for prayinghearts.com",
+  "main": "server.js",
+  "repository": "https://github.com/godfredcs/api.prayinghearts.com.git",
+  "author": "godfredcs <addaiz.godfred@gmail.com>",
+  "license": "MIT"
+}
