@@ -8,6 +8,7 @@ const {PORT} = require('./src/config/env');
 const {setHeaders, _404} = require('./src/middlewares');
 const sockets = require('./src/sockets');
 const db = require('./src/db');
+const usersRoutes = require('./src/modules/Users/UsersRoutes');
 
 app.use(setHeaders);
 
@@ -15,6 +16,8 @@ app.get('/', (req, res) => {
     console.log('ip address of client is: ', req.socket.localAddress.substr(7));
     res.send('hello world');
 });
+
+app.use('/users', usersRoutes);
 
 _404(app); // Handle 404 and other errors.
 
