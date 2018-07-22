@@ -1,25 +1,31 @@
 const http = require('http');
+const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const server = http.Server(app);
 const io = require('socket.io')(server);
 
-const {PORT} = require('./src/config/env');
-const {setHeaders, _404} = require('./src/middlewares');
-const sockets = require('./src/sockets');
 const db = require('./src/db');
-const usersRoutes = require('./src/modules/Users/UsersRoutes');
+const {PORT} = require('./src/config/env');
+const sockets = require('./src/sockets');
+const {setHeaders, handleErrors} = require('./src/middlewares');
+const {UsersRoutes, PostsRoutes} = require('./src/modules');
 
 app.use(setHeaders);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
 app.get('/', (req, res) => {
     console.log('ip address of client is: ', req.socket.localAddress.substr(7));
     res.send('hello world');
 });
 
-app.use('/users', usersRoutes);
+app.use('/users', UsersRoutes);
+app.use('/posts', PostsRoutes);
 
-_404(app); // Handle 404 and other errors.
+handleErrors(app); // Handle 404 and other errors.
 
 sockets(io); // Handles sockets.
 

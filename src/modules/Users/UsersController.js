@@ -1,15 +1,29 @@
+const User = require('./UsersModel');
 
+exports.index = async (req, res, next) => {
+    await User.find((err, users) => {
+        if (err) {
+            return res.status(422).json(err);
+        }
 
-exports.index = (req, res, next) => {
-    res.send('You are getting all users');
+        return res.status(200).json(users);
+    });
 };
 
-exports.register = (req, res, next) => {
-    res.send('You are trying to register now');
+exports.register = async (req, res, next) => {
+    const user = new User(req.body);
+
+    await user.save((err, user) => {
+        if (err) {
+            return res.status(422).json(err);
+        }
+
+        return res.status(201).json(user);
+    });
 };
 
 exports.login = (req, res, next) => {
-    res.send('You are trying to login now');
+    return res.status(200).json(req.body);
 };
 
 exports.passwordReset = (req, res, next) => {

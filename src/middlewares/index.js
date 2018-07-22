@@ -1,7 +1,7 @@
-const _404 = require('./_404');
+const handleErrors = require('./handleErrors');
 const setHeaders = require('./setHeaders');
 
 module.exports = {
-    _404,
+    handleErrors,
     setHeaders
 };
