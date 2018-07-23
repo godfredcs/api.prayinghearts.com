@@ -8,8 +8,11 @@ const PostSchema = new mongoose.Schema({
     },
     body: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Post', PostSchema);
