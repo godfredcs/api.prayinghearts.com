@@ -16,6 +16,7 @@ exports.index = (req, res, next) => {
 };
 
 exports.register = (req, res, next) => {
+    console.log('this is the request body: ', req.body)
     const data = {
         email: req.body.email,
         username: req.body.username,
@@ -84,6 +85,10 @@ exports.login = (req, res, next) => {
     User.findOne({ $or: [{username: data.username_or_email}, {email: data.username_or_email}] }, (err, user) => {
         if (err) {
             return res.status(404).json(err);
+        }
+
+        if (!user) {
+            return res.status(404).json({error: 'User not found'});
         }
 
         bcrypt.compare(data.password, user.password, (err, result) => {

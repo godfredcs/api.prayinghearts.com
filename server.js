@@ -2,6 +2,7 @@ const http = require('http');
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const app = express();
 const server = http.Server(app);
 const io = require('socket.io')(server);
@@ -15,7 +16,8 @@ const {UsersRoutes, PostsRoutes} = require('./src/modules');
 app.use(setHeaders);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
+app.use(express.static(path.join(__dirname, 'src', 'public')));
+app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
     console.log('ip address of client is: ', req.socket.localAddress.substr(7));
