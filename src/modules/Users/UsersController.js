@@ -72,18 +72,20 @@ exports.login = async (req, res, next) => {
 
         bcrypt.compare(data.password, user.password, (err, result) => {
             if (err) {
-                return res.status(422).json(err);
+                return res.status(401).json(err);
             }
 
-            if (result) {
-                const token = jwt.sign({
-                    email: user.email,
-                    id: data._id
-                }, JWT_KEY, { expiresIn: "30d" })
+            if (!result) {
+                return res.status(401).json({error: 'Password is not correct'});
             }
+
+            const api_token = jwt.sign({email: user.email, id: user.id}, JWT_KEY, {expiresIn: "30d"});
+
+            const results = {...user._doc, api_token};
+            delete results.password;
+
+            return res.status(200).json(results);
         });
-
-        return res.status(200).json(user);
     });
 };
 
