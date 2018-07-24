@@ -15,7 +15,7 @@ exports.index = async (req, res, next) => {
     });
 };
 
-exports.register = async (req, res, next) => {
+exports.register = (req, res, next) => {
     const data = {
         email: req.body.email,
         username: req.body.username,
@@ -35,20 +35,36 @@ exports.register = async (req, res, next) => {
         return res.status(422).json(validation.errors.all());
     }
 
-    delete data.password_confirmation;
-
-    const user = new User(data);
-
-    await user.save((err, user) => {
+    User.findOne({$or: [{email: data.email}, {username: data.username}]}, (err, existingUser) => {
         if (err) {
             return res.status(422).json(err);
         }
 
-        return res.status(201).json(user);
+        if (existingUser) {
+            return res.status(401).json({error: "Email or username already exists"});
+        }
+
+        delete data.password_confirmation;
+
+        const user = new User(data);
+
+        user.save((err, user) => {
+            if (err) {
+                return res.status(422).json(err);
+            }
+
+            const api_token = jwt.sign({email: user.email, id: user.id}, JWT_KEY, {expiresIn: "30d"});
+
+            const results = {...user._doc, api_token};
+            delete results.password;
+
+            return res.status(201).json(results);
+        });
     });
+
 };
 
-exports.login = async (req, res, next) => {
+exports.login = (req, res, next) => {
     const data = {
         username_or_email: req.body.username_or_email,
         password: req.body.password
