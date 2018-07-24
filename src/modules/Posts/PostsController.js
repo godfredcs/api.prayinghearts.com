@@ -7,7 +7,7 @@ exports.index = async (req, res, next) => {
         }
 
         return res.status(200).json(posts);
-    });
+    }).populate('user');
 };
 
 exports.store = async (req, res, next) => {
