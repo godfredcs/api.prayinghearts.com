@@ -9,7 +9,7 @@ const io = require('socket.io')(server);
 const db = require('./src/db');
 const {PORT} = require('./src/config/env');
 const sockets = require('./src/sockets');
-const {setHeaders, handleErrors} = require('./src/middlewares');
+const {setHeaders, handleErrors, checkAuthorization} = require('./src/middlewares');
 const {UsersRoutes, PostsRoutes} = require('./src/modules');
 
 app.use(setHeaders);
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', UsersRoutes);
-app.use('/posts', PostsRoutes);
+app.use('/posts', checkAuthorization, PostsRoutes);
 
 handleErrors(app); // Handle 404 and other errors.
 

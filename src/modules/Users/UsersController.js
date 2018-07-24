@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const {JWT_KEY} = require('../../config/env');
 
-exports.index = async (req, res, next) => {
-    await User.find((err, users) => {
+exports.index = (req, res, next) => {
+    User.find((err, users) => {
         if (err) {
             return res.status(422).json(err);
         }
